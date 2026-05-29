@@ -1,0 +1,8 @@
+
+fastapi
+uvicorn
+python-dotenv
+google-generativeai
+slack_sdk
+python-multipart
+jinja2
