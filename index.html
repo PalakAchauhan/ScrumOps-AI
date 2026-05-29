@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Sprint Planner</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+
+    <div class="background-glow"></div>
+    <div class="background-glow-2"></div>
+
+    <div class="container">
+        <a href="/" class="back-btn">
+            ← Back to Workspace
+        </a>
+
+        <div class="hero">
+
+            <div class="badge">
+                AI Powered Agile Sprint Planning
+            </div>
+
+            <h1>
+                AI Sprint Assistant
+            </h1>
+
+            <p>
+                Ask a question, generate an Epic and Stories, and create Jira issues automatically.
+                Use the chat-style prompt below to describe what you need.
+            </p>
+
+            <p style="color:#94a3b8; margin-top:12px;">
+                If Jira is configured with environment credentials, issues will be created automatically.
+            </p>
+
+        </div>
+
+        <div class="input-card">
+
+            <form id="sprintForm" action="/generate" method="post">
+
+                <textarea
+                    name="user_input"
+                    placeholder="Type your AI question here...
+
+Example:
+Create a user onboarding epic with stories, tasks, and acceptance criteria."
+                    required></textarea>
+
+                <div class="button-row">
+
+                    <button id="generateBtn" class="generate-btn" type="submit" name="action" value="generate">
+                        Ask AI
+                    </button>
+
+                    <button class="generate-btn" type="submit" name="action" value="create_jira">
+                        Create Jira Issue
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- AI Loader Overlay -->
+
+    <div id="loaderOverlay" class="loader-overlay hidden">
+
+        <div class="loader-card">
+
+            <div class="ai-loader"></div>
+
+            <h2>
+                Generating Sprint Using AI
+            </h2>
+
+            <p>
+                Gemini AI is analyzing your requirement,
+                creating stories, sprint tasks and acceptance criteria.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Loader Script -->
+
+    <script>
+
+        const form = document.getElementById("sprintForm")
+
+        const loader = document.getElementById("loaderOverlay")
+
+        const button = document.getElementById("generateBtn")
+
+        form.addEventListener("submit", () => {
+
+            loader.classList.remove("hidden")
+
+            button.innerText = "Generating..."
+
+            button.disabled = true
+
+        })
+
+    </script>
+
+</body>
+
+</html>

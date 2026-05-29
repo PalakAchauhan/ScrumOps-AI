@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Sprint Board</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+
+    <div class="background-glow"></div>
+    <div class="background-glow-2"></div>
+
+    <div class="container">
+
+        <a href="/assistant" class="back-btn">
+            ← Back to Sprint Planner
+        </a>
+
+        <div class="topbar">
+
+            <div class="title">
+
+                <h1>{{ data.epic }}</h1>
+
+                <div class="subtitle">
+                    AI Scrum Assistant Board
+                </div>
+
+            </div>
+
+            <div class="stats">
+
+                <div class="stat-card">
+                    <div class="stat-title">Stories</div>
+                    <div class="stat-value">{{ data.stories|length }}</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-title">AI Powered</div>
+                    <div class="stat-value">Gemini</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- REAL JIRA SUCCESS -->
+
+        {% if jira_success %}
+
+        <div class="ai-update-banner"
+            style="background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.2); color: #d1fae5;">
+
+            ✅ Real Jira tickets created successfully:
+
+            <a href="{{ jira_issue_url }}"
+                target="_blank"
+                style="color: #a7f3d0; text-decoration: underline; font-weight:700;">
+                {{ jira_issue_key }}
+            </a>
+
+        </div>
+
+        {% endif %}
+
+        <!-- REAL JIRA ERROR -->
+
+        {% if jira_error %}
+
+        <div class="ai-update-banner"
+            style="background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.2); color: #fecaca;">
+
+            Jira creation failed: {{ jira_error }}
+
+        </div>
+
+        {% endif %}
+
+        <!-- JIRA ENABLED INFO -->
+
+        {% if jira_configured %}
+
+        <div class="workspace-card">
+
+            <div class="card-title">
+                Jira-first Flow Enabled
+            </div>
+
+            <div class="insight-box">
+                ✅ Real Jira integration is active.
+                Jira Epics and Stories are automatically created
+                immediately after prompt generation.
+            </div>
+
+            <div class="insight-box">
+                Open the Jira issue link from the success banner above.
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        <!-- AI MODIFICATION PANEL -->
+
+        <div class="assistant-panel">
+
+            <h2>AI Scrum Assistant</h2>
+
+            <p>
+                Ask AI to modify stories, tasks, acceptance criteria,
+                priorities or sprint details.
+            </p>
+
+            <form action="/modify" method="post">
+
+                <textarea
+                    class="assistant-textarea"
+                    name="modification_prompt"
+                    placeholder="Example:
+
+Add security testing tasks to Story 2
+
+Improve acceptance criteria for scalability
+
+Add OAuth support to authentication story"
+                    required></textarea>
+
+                <button class="generate-btn" type="submit">
+                    Update Sprint Using AI
+                </button>
+
+            </form>
+
+        </div>
+
+        {% if ai_update %}
+
+        <div class="ai-update-banner">
+            AI Update Applied: {{ ai_update }}
+        </div>
+
+        {% endif %}
+
+        <!-- STORIES -->
+
+        <div class="board">
+
+            {% for story in data.stories %}
+
+            <div class="story-card">
+
+                <div class="tag-row">
+
+                    <div class="tag priority-high">
+                        {{ story.priority }}
+                    </div>
+
+                    <div class="tag story-points">
+                        {{ story.story_points }} SP
+                    </div>
+
+                </div>
+
+                <h3>
+                    Story {{ story.id }}
+                </h3>
+
+                <h2 style="margin-bottom:15px;">
+                    {{ story.title }}
+                </h2>
+
+                <p>
+                    {{ story.description }}
+                </p>
+
+                <div class="section-heading">
+                    Tasks
+                </div>
+
+                <ul class="list">
+
+                    {% for task in story.tasks %}
+
+                    <li>{{ task }}</li>
+
+                    {% endfor %}
+
+                </ul>
+
+                <div class="section-heading">
+                    Acceptance Criteria
+                </div>
+
+                <ul class="list">
+
+                    {% for ac in story.acceptance_criteria %}
+
+                    <li>{{ ac }}</li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+                <div class="workspace-grid">
+                    <div class="workspace-card">
+                        <div class="card-title">How to Use the Bot</div>
+                        <div class="insight-box">
+                            Click <strong>Open Slack Bot Chat</strong> to open a direct message with the bot in Slack.
+                        </div>
+                        <div class="insight-box">
+                            Example prompt: <code>Create an epic and user story for authentication flow.</code>
+                        </div>
+                        <div class="insight-box">
+                            If Jira is configured, the bot will create the issue automatically and return the Jira link.
+                        </div>
+                        <div class="insight-box">
+                            Use Slack mention or slash command in Slack to trigger automation from inside Slack.
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="workspace-card">
+                    <div class="card-title">Set Up Real Slack Integration</div>
+                    {% if error %}
+                        <div class="insight-box" style="background: rgba(220,38,38,0.12); border-color: rgba(220,38,38,0.2);">
+                            <strong>Slack error:</strong> {{ error }}
+                        </div>
+                    {% endif %}
+                    <p class="activity-text">
+                        To use live Slack data, add the Slack bot token and signing secret to your .env file:
+                    </p>
+                    <pre style="background: #020617; border: 1px solid #1e293b; border-radius: 16px; padding: 16px; color: #cbd5e1; white-space: pre-wrap;">SLACK_BOT_TOKEN=xoxb-...your-token...
+SLACK_SIGNING_SECRET=your-signing-secret</pre>
+                    <p class="activity-text">
+                        Then restart the app. Make sure the bot token has the required scopes for reading channels, users, histories, and sending messages.
+                    </p>
+                    <p class="activity-text">
+                        After a successful connection, use Slack itself to interact with the bot: open the workspace, DM the bot, or use a slash command like <code>/jira</code>.
+                    </p>
+                    <p class="activity-text">
+                        You can also use the <strong>Launch AI Assistant</strong> button above to open the chat-style AI planner directly.
+                    </p>
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- FLOATING AI ASSISTANT BUTTON -->
+    <a href="/assistant" class="floating-ai-btn">
+        <span class="ai-icon">✨</span>
+        <span>Ask AI</span>
+    </a>
+
+</body>
+
+</html>

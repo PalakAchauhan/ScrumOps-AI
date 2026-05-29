@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Story Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>{{ story.title }}</h1>
+
+    <p>{{ story.description }}</p>
+
+    <h2>Tasks</h2>
+
+    <ul>
+        {% for task in story.tasks %}
+            <li>{{ task }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Acceptance Criteria</h2>
+
+    <ul>
+        {% for ac in story.acceptance_criteria %}
+            <li>{{ ac }}</li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+</body>
+</html>

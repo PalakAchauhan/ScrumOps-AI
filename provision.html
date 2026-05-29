@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Provisioning Workspace</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Inter',sans-serif;
+            background:#020617;
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            overflow:hidden;
+            color:white;
+        }
+
+        .glow{
+            position:absolute;
+            width:500px;
+            height:500px;
+            background:radial-gradient(circle,#2563eb40,transparent 70%);
+            animation:pulse 4s infinite;
+        }
+
+        @keyframes pulse{
+            0%{transform:scale(1);}
+            50%{transform:scale(1.2);}
+            100%{transform:scale(1);}
+        }
+
+        .loader-card{
+            position:relative;
+            z-index:10;
+            width:520px;
+            background:rgba(15,23,42,0.85);
+            border:1px solid rgba(255,255,255,0.08);
+            backdrop-filter:blur(20px);
+            padding:50px;
+            border-radius:30px;
+            text-align:center;
+            box-shadow:0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .spinner{
+            width:90px;
+            height:90px;
+            border:6px solid #1e293b;
+            border-top:6px solid #60a5fa;
+            border-radius:50%;
+            margin:auto;
+            animation:spin 1s linear infinite;
+        }
+
+        @keyframes spin{
+            100%{
+                transform:rotate(360deg);
+            }
+        }
+
+        h1{
+            margin-top:30px;
+            font-size:34px;
+            margin-bottom:15px;
+        }
+
+        .status{
+            color:#94a3b8;
+            font-size:18px;
+            height:30px;
+            margin-top:15px;
+        }
+
+        .progress-container{
+            width:100%;
+            height:12px;
+            background:#1e293b;
+            border-radius:999px;
+            overflow:hidden;
+            margin-top:35px;
+        }
+
+        .progress-bar{
+            width:0%;
+            height:100%;
+            background:linear-gradient(to right,#2563eb,#7c3aed);
+            animation:progress 6s forwards;
+        }
+
+        @keyframes progress{
+            from{
+                width:0%;
+            }
+            to{
+                width:100%;
+            }
+        }
+
+        .small{
+            margin-top:20px;
+            color:#64748b;
+            font-size:14px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="glow"></div>
+
+    <div class="loader-card">
+
+        <div class="spinner"></div>
+
+        <h1>AI is provisioning sprint workspace...</h1>
+
+        <div class="status" id="statusText">
+            Initializing agile workspace...
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+
+        <div class="small">
+            AI Sprint Orchestration Engine v2.1
+        </div>
+
+    </div>
+
+    <script>
+
+        const messages = [
+            "Initializing agile workspace...",
+            "Generating sprint backlog...",
+            "Analyzing dependencies...",
+            "Provisioning Kanban board...",
+            "Assigning task priorities...",
+            "Finalizing sprint environment...",
+            "Workspace ready."
+        ];
+
+        let index = 0;
+
+        const statusText = document.getElementById("statusText");
+
+        const interval = setInterval(() => {
+
+            index++;
+
+            if(index < messages.length){
+                statusText.innerText = messages[index];
+            }
+
+        }, 900);
+
+        setTimeout(() => {
+            window.location.href = "/board";
+        }, 6500);
+
+    </script>
+
+</body>
+
+</html>
