@@ -53,10 +53,6 @@ templates = Jinja2Templates(
     directory=os.path.join(BASE_DIR, "templates")
 )
 
-# Disable Jinja2 template caching to avoid compatibility issues with the installed Jinja2 version.
-templates.env.cache = {}
-templates.env.cache_size = 0
-
 app.mount(
     "/static",
     StaticFiles(directory=os.path.join(BASE_DIR, "static")),
