@@ -79,6 +79,7 @@ def generate_followup_question(user_id, user_message):
 
         save_standup_record(
             user_id,
+            session["status"],
             session["today_work"],
             session["blockers"],
             user_message
