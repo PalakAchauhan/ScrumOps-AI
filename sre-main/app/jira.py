@@ -1,4 +1,5 @@
 import os
+import sys
 import requests
 from requests.auth import HTTPBasicAuth
 
@@ -101,10 +102,11 @@ def create_jira_issue(summary, description, issue_type=None, extra_fields=None):
 
     response = requests.post(url, json=payload, auth=auth, headers=headers, timeout=20)
 
-    print("=" * 80)
-    print("JIRA STATUS:", response.status_code)
-    print("JIRA RESPONSE:", response.text)
-    print("=" * 80)
+    sys.stderr.write("=" * 80 + "\n")
+    sys.stderr.write(f"JIRA STATUS: {response.status_code}\n")
+    sys.stderr.write(f"JIRA RESPONSE: {response.text}\n")
+    sys.stderr.write("=" * 80 + "\n")
+    sys.stderr.flush()
 
     if response.ok:
         issue_key = response.json().get("key")
