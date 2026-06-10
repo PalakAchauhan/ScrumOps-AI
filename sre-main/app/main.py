@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import JSONResponse, RedirectResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
-
 from slack_sdk import WebClient
 
 from app.memory import (
@@ -49,9 +47,10 @@ app = FastAPI()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-templates = Jinja2Templates(
-    directory=os.path.join(BASE_DIR, "templates")
-)
+# Load template once at startup to avoid Jinja2 cache issues
+ASSISTANT_TEMPLATE_PATH = os.path.join(BASE_DIR, "templates", "index.html")
+with open(ASSISTANT_TEMPLATE_PATH, 'r') as f:
+    ASSISTANT_TEMPLATE = f.read()
 
 app.mount(
     "/static",
@@ -76,10 +75,7 @@ async def home():
 @app.get("/assistant", response_class=HTMLResponse)
 async def assistant_ui(request: Request):
 
-    return templates.TemplateResponse(
-        "index.html",
-        {"request": request}
-    )
+    return ASSISTANT_TEMPLATE
 
 
 @app.post("/generate")

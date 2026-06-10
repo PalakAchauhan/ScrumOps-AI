@@ -5,4 +5,5 @@ python-dotenv
 google-generativeai
 slack_sdk
 python-multipart
-jinja2==2.11.3
+jinja2==3.1.2
+markupsafe==2.1.1
