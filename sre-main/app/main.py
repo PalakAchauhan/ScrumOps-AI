@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 
 from dotenv import load_dotenv
@@ -33,6 +34,12 @@ from app.jira import (
 )
 
 load_dotenv()
+
+def log_debug(*messages):
+    sys.stderr.write("[APP DEBUG] " + " ".join(str(m) for m in messages) + "\n")
+    sys.stderr.flush()
+
+log_debug("App starting up...")
 
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 
@@ -78,15 +85,27 @@ async def assistant_ui(request: Request):
 @app.post("/generate")
 async def generate(prompt: str = Form(...)):
 
+    log_debug(f"POST /generate called with prompt: {repr(prompt[:100])}")
+
     structure = generate_jira_structure(prompt)
+
+    log_debug(f"Generated structure: {structure}")
 
     jira_response = None
 
     if jira_is_configured():
 
+        log_debug("Jira is configured, attempting to create issues...")
+
         jira_response = create_jira_issues_from_structure(
             structure
         )
+
+        log_debug(f"Jira response: {jira_response}")
+
+    else:
+
+        log_debug("Jira is NOT configured, skipping issue creation")
 
     return JSONResponse({
         "success": True,
@@ -121,6 +140,8 @@ async def slack_events(request: Request):
 
     data = await request.json()
 
+    log_debug(f"Slack event received: {data.get('type', 'unknown')}")
+
     if "challenge" in data:
 
         return JSONResponse({
@@ -137,6 +158,8 @@ async def slack_events(request: Request):
         user_id = event.get("user")
         text = event.get("text", "")
         channel_id = event.get("channel")
+
+        log_debug(f"Message from {user_id}: {repr(text[:100])}")
 
         # -------------------------
         # START STANDUP
