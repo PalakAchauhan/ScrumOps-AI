@@ -427,9 +427,8 @@ async def slack_events(request: Request):
 
         if text.lower() == "launch ai assistant":
 
-            assistant_url = (
-                "https://ai-sprint-planner.onrender.com/assistant"
-            )
+            assistant_url = request.url_for("assistant_ui")
+            log_debug(f"Launching assistant URL: {assistant_url}")
 
             client.chat_postMessage(
                 channel=channel_id,
