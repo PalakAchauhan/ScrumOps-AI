@@ -9,17 +9,22 @@ from fastapi.templating import Jinja2Templates
 
 from slack_sdk import WebClient
 
+from app.memory import (
+    get_user_history,
+    start_session,
+    get_today_report,
+    get_open_blockers,
+    get_weekly_report,
+    get_monthly_report,
+    get_yearly_report
+)
+
+from app.slack_blocks import create_standup_block
+
 from app.bot import (
     generate_followup_question,
     generate_jira_structure,
     modify_sprint
-)
-
-from app.memory import (
-    load_memory,
-    save_memory,
-    get_user_history,
-    start_session
 )
 
 from app.jira import (
@@ -139,17 +144,22 @@ async def slack_events(request: Request):
 
         if text.lower() == "start standup":
 
-            start_session(user_id)
+            blocks = create_standup_block(
+                user_name="Developer",
+                tasks=[
+                    "Sprint Activities",
+                    "Testing",
+                    "Project Work"
+                ]
+            )
 
             client.chat_postMessage(
                 channel=channel_id,
-                text=(
-                    "👋 Daily Standup\n\n"
-                    "What are you working on today?"
-                )
+                text="Daily Standup",
+                blocks=blocks
             )
 
-            return JSONResponse({"status": "standup_started"})
+            return JSONResponse({"status": "sent"})
 
         # -------------------------
         # SHOW YESTERDAY
@@ -218,7 +228,178 @@ async def slack_events(request: Request):
             return JSONResponse({"status": "history_sent"})
 
         # -------------------------
-        # OPEN AI ASSISTANT
+        # SHOW TODAY REPORT
+        # -------------------------
+
+        if text.lower() == "show today report":
+
+            report = get_today_report(user_id)
+
+            if not report:
+
+                client.chat_postMessage(
+                    channel=channel_id,
+                    text="No updates found for today."
+                )
+
+                return JSONResponse({"status": "empty"})
+
+            response = "📅 Today's Report\n\n"
+
+            for item in report:
+
+                response += (
+                    f"Status: {item['status']}\n"
+                    f"Work: {item['today_work']}\n"
+                    f"Blockers: {item['blockers']}\n"
+                    f"Support: {item['support']}\n\n"
+                )
+
+            client.chat_postMessage(
+                channel=channel_id,
+                text=response
+            )
+
+            return JSONResponse({"status": "sent"})
+
+        # -------------------------
+        # SHOW WEEKLY REPORT
+        # -------------------------
+
+        if text.lower() == "show weekly report":
+
+            report = get_weekly_report(user_id)
+
+            if not report:
+
+                client.chat_postMessage(
+                    channel=channel_id,
+                    text="No weekly data found."
+                )
+
+                return JSONResponse({"status": "empty"})
+
+            response = "📊 Weekly Report\n\n"
+
+            for item in report:
+
+                response += (
+                    f"{item['date']}\n"
+                    f"Status: {item['status']}\n"
+                    f"Work: {item['today_work']}\n\n"
+                )
+
+            client.chat_postMessage(
+                channel=channel_id,
+                text=response
+            )
+
+            return JSONResponse({"status": "sent"})
+
+        # -------------------------
+        # SHOW MONTHLY REPORT
+        # -------------------------
+
+        if text.lower() == "show monthly report":
+
+            report = get_monthly_report(user_id)
+
+            if not report:
+
+                client.chat_postMessage(
+                    channel=channel_id,
+                    text="No monthly data found."
+                )
+
+                return JSONResponse({"status": "empty"})
+
+            response = "📈 Monthly Report\n\n"
+
+            for item in report:
+
+                response += (
+                    f"{item['date']}\n"
+                    f"Status: {item['status']}\n"
+                    f"Work: {item['today_work']}\n\n"
+                )
+
+            client.chat_postMessage(
+                channel=channel_id,
+                text=response
+            )
+
+            return JSONResponse({"status": "sent"})
+
+        # -------------------------
+        # SHOW YEARLY REPORT
+        # -------------------------
+
+        if text.lower() == "show yearly report":
+
+            report = get_yearly_report(user_id)
+
+            if not report:
+
+                client.chat_postMessage(
+                    channel=channel_id,
+                    text="No yearly data found."
+                )
+
+                return JSONResponse({"status": "empty"})
+
+            response = "📆 Yearly Report\n\n"
+
+            for item in report:
+
+                response += (
+                    f"{item['date']}\n"
+                    f"Status: {item['status']}\n"
+                    f"Work: {item['today_work']}\n\n"
+                )
+
+            client.chat_postMessage(
+                channel=channel_id,
+                text=response
+            )
+
+            return JSONResponse({"status": "sent"})
+
+        # -------------------------
+        # SHOW OPEN BLOCKERS
+        # -------------------------
+
+        if text.lower() == "show open blockers":
+
+            blockers = get_open_blockers(user_id)
+
+            if not blockers:
+
+                client.chat_postMessage(
+                    channel=channel_id,
+                    text="No blockers found."
+                )
+
+                return JSONResponse({"status": "empty"})
+
+            response = "🔴 Open Blockers\n\n"
+
+            for item in blockers:
+
+                response += (
+                    f"{item['date']}\n"
+                    f"Work: {item['today_work']}\n"
+                    f"Blocker: {item['blockers']}\n\n"
+                )
+
+            client.chat_postMessage(
+                channel=channel_id,
+                text=response
+            )
+
+            return JSONResponse({"status": "sent"})
+
+        # -------------------------
+        # LAUNCH AI ASSISTANT
         # -------------------------
 
         if text.lower() == "launch ai assistant":
@@ -268,18 +449,30 @@ async def slack_interactions(request: Request):
 
     action = payload["actions"][0]["action_id"]
 
+    user_id = payload["user"]["id"]
+
     if action == "on_track_btn":
 
+        start_session(
+            user_id,
+            status="on_track"
+        )
+
         reply = (
-            "Great! What is your primary "
-            "focus for today?"
+            "✅ Great to hear.\n\n"
+            "What are you working on today?"
         )
 
     elif action == "blocked_btn":
 
+        start_session(
+            user_id,
+            status="blocked"
+        )
+
         reply = (
-            "Understood. What blocker "
-            "is impacting your progress?"
+            "🔴 Understood.\n\n"
+            "What are you working on today?"
         )
 
     else:
@@ -292,3 +485,5 @@ async def slack_interactions(request: Request):
     )
 
     return JSONResponse({"status": "ok"})
+
+
