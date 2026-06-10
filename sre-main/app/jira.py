@@ -10,13 +10,27 @@ JIRA_PROJECT_KEY = os.getenv("JIRA_PROJECT_KEY")
 JIRA_ISSUE_TYPE = os.getenv("JIRA_ISSUE_TYPE", "Task")
 
 
+def debug_log(*messages):
+    sys.stderr.write("[JIRA DEBUG] " + " ".join(str(m) for m in messages) + "\n")
+    sys.stderr.flush()
+
+
 def jira_is_configured():
-    return all([
+    configured = all([
         JIRA_BASE_URL,
         JIRA_API_EMAIL,
         JIRA_API_TOKEN,
         JIRA_PROJECT_KEY
     ])
+    if not configured:
+        debug_log(
+            "Jira config missing:",
+            "JIRA_BASE_URL=" + repr(JIRA_BASE_URL),
+            "JIRA_API_EMAIL=" + repr(JIRA_API_EMAIL),
+            "JIRA_API_TOKEN_set=" + str(bool(JIRA_API_TOKEN)),
+            "JIRA_PROJECT_KEY=" + repr(JIRA_PROJECT_KEY)
+        )
+    return configured
 
 
 def build_adf_description(text):
@@ -51,9 +65,11 @@ def get_issue_metadata(project_key, issue_type_name):
     }
 
     response = requests.get(url, auth=auth, headers=headers, timeout=20)
+    debug_log("Jira metadata request", url, "status", response.status_code)
     if response.ok:
         return response.json()
 
+    debug_log("Jira metadata failed", response.status_code, response.text)
     return None
 
 
@@ -100,13 +116,21 @@ def create_jira_issue(summary, description, issue_type=None, extra_fields=None):
         "Content-Type": "application/json"
     }
 
+    token_preview = repr(JIRA_API_TOKEN)[:32] if JIRA_API_TOKEN else "None"
+    debug_log(
+        "Jira create issue request",
+        "url=" + url,
+        "project=" + repr(JIRA_PROJECT_KEY),
+        "summary=" + repr(summary),
+        "issue_type=" + repr(issue_type),
+        "token_len=" + str(len(JIRA_API_TOKEN or "")),
+        "token_preview=" + token_preview
+    )
+    debug_log("Jira payload fields", {k: v for k, v in fields.items() if k != "description"})
+
     response = requests.post(url, json=payload, auth=auth, headers=headers, timeout=20)
 
-    sys.stderr.write("=" * 80 + "\n")
-    sys.stderr.write(f"JIRA STATUS: {response.status_code}\n")
-    sys.stderr.write(f"JIRA RESPONSE: {response.text}\n")
-    sys.stderr.write("=" * 80 + "\n")
-    sys.stderr.flush()
+    debug_log("Jira create issue response", "status", response.status_code, "text", response.text)
 
     if response.ok:
         issue_key = response.json().get("key")
