@@ -77,7 +77,7 @@ async def home():
 async def assistant_ui(request: Request):
 
     return templates.TemplateResponse(
-        "assistant.html",
+        "index.html",
         {"request": request}
     )
 
