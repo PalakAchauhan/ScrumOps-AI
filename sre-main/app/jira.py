@@ -101,6 +101,11 @@ def create_jira_issue(summary, description, issue_type=None, extra_fields=None):
 
     response = requests.post(url, json=payload, auth=auth, headers=headers, timeout=20)
 
+    print("=" * 80)
+    print("JIRA STATUS:", response.status_code)
+    print("JIRA RESPONSE:", response.text)
+    print("=" * 80)
+
     if response.ok:
         issue_key = response.json().get("key")
         issue_url = f"{JIRA_BASE_URL.rstrip('/')}/browse/{issue_key}"
