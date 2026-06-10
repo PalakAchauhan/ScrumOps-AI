@@ -2,5 +2,5 @@ services:
   - type: web
     name: ai-scrum-assistance
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port 10000
+    buildCommand: pip install -r sre-main/requirements.txt
+    startCommand: cd sre-main && uvicorn app.main:app --host 0.0.0.0 --port 10000
