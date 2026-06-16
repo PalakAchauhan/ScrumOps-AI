@@ -59,17 +59,39 @@ def build_adf_description(text):
 
 def get_issue_metadata(project_key, issue_type_name):
     url = f"{JIRA_BASE_URL.rstrip('/')}/rest/api/3/issue/createmeta?projectKeys={project_key}&issuetypeNames={issue_type_name}&expand=projects.issuetypes.fields"
-    auth = HTTPBasicAuth(JIRA_API_EMAIL, JIRA_API_TOKEN)
+
+    auth = HTTPBasicAuth(
+        JIRA_API_EMAIL,
+        JIRA_API_TOKEN
+    )
+
     headers = {
         "Accept": "application/json"
     }
 
-    response = requests.get(url, auth=auth, headers=headers, timeout=20)
-    debug_log("Jira metadata request", url, "status", response.status_code)
+    response = requests.get(
+        url,
+        auth=auth,
+        headers=headers,
+        timeout=20
+    )
+
+    debug_log(
+        "Jira metadata request",
+        url,
+        "status",
+        response.status_code
+    )
+
     if response.ok:
         return response.json()
 
-    debug_log("Jira metadata failed", response.status_code, response.text)
+    debug_log(
+        "Jira metadata failed",
+        response.status_code,
+        response.text
+    )
+
     return None
 
 
@@ -87,6 +109,7 @@ def find_field_key(metadata, field_name):
 
 
 def create_jira_issue(summary, description, issue_type=None, extra_fields=None):
+
     if not jira_is_configured():
         return {
             "success": False,
@@ -94,6 +117,7 @@ def create_jira_issue(summary, description, issue_type=None, extra_fields=None):
         }
 
     issue_type = issue_type or JIRA_ISSUE_TYPE
+
     fields = {
         "project": {
             "key": JIRA_PROJECT_KEY
@@ -108,15 +132,27 @@ def create_jira_issue(summary, description, issue_type=None, extra_fields=None):
     if extra_fields:
         fields.update(extra_fields)
 
-    payload = {"fields": fields}
+    payload = {
+        "fields": fields
+    }
+
     url = f"{JIRA_BASE_URL.rstrip('/')}/rest/api/3/issue"
-    auth = HTTPBasicAuth(JIRA_API_EMAIL, JIRA_API_TOKEN)
+
+    auth = HTTPBasicAuth(
+        JIRA_API_EMAIL,
+        JIRA_API_TOKEN
+    )
+
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json"
     }
 
-    token_preview = repr(JIRA_API_TOKEN)[:32] if JIRA_API_TOKEN else "None"
+    token_preview = (
+        repr(JIRA_API_TOKEN)[:32]
+        if JIRA_API_TOKEN else "None"
+    )
+
     debug_log(
         "Jira create issue request",
         "url=" + url,
@@ -126,15 +162,36 @@ def create_jira_issue(summary, description, issue_type=None, extra_fields=None):
         "token_len=" + str(len(JIRA_API_TOKEN or "")),
         "token_preview=" + token_preview
     )
-    debug_log("Jira payload fields", {k: v for k, v in fields.items() if k != "description"})
 
-    response = requests.post(url, json=payload, auth=auth, headers=headers, timeout=20)
+    debug_log(
+        "Jira payload fields",
+        {k: v for k, v in fields.items() if k != "description"}
+    )
 
-    debug_log("Jira create issue response", "status", response.status_code, "text", response.text)
+    response = requests.post(
+        url,
+        json=payload,
+        auth=auth,
+        headers=headers,
+        timeout=20
+    )
+
+    debug_log(
+        "Jira create issue response",
+        "status",
+        response.status_code,
+        "text",
+        response.text
+    )
 
     if response.ok:
+
         issue_key = response.json().get("key")
-        issue_url = f"{JIRA_BASE_URL.rstrip('/')}/browse/{issue_key}"
+
+        issue_url = (
+            f"{JIRA_BASE_URL.rstrip('/')}/browse/{issue_key}"
+        )
+
         return {
             "success": True,
             "issue_key": issue_key,
@@ -147,6 +204,7 @@ def create_jira_issue(summary, description, issue_type=None, extra_fields=None):
         "error": response.text,
         "status_code": response.status_code
     }
+
     try:
         result["data"] = response.json()
     except Exception:
@@ -156,29 +214,45 @@ def create_jira_issue(summary, description, issue_type=None, extra_fields=None):
 
 
 def format_story_description(story):
+
     lines = []
-    description = story.get("description", "")
+
+    description = story.get(
+        "description",
+        ""
+    )
+
     if description:
         lines.append(description)
 
     tasks = story.get("tasks") or []
+
     if tasks:
         lines.append("")
         lines.append("Tasks:")
+
         for task in tasks:
             lines.append(f"- {task}")
 
-    acceptance = story.get("acceptance_criteria") or []
+    acceptance = (
+        story.get("acceptance_criteria") or []
+    )
+
     if acceptance:
         lines.append("")
         lines.append("Acceptance Criteria:")
+
         for ac in acceptance:
             lines.append(f"- {ac}")
 
-    return "\n".join(lines).strip() or "No description provided."
+    return (
+        "\n".join(lines).strip()
+        or "No description provided."
+    )
 
 
 def create_jira_issues_from_structure(structure):
+
     if not jira_is_configured():
         return {
             "success": False,
@@ -187,55 +261,160 @@ def create_jira_issues_from_structure(structure):
 
     created = []
     epic_key = None
-    epic_link_field = None
 
-    epic_name = structure.get("epic")
-    if epic_name:
-        epic_meta = get_issue_metadata(JIRA_PROJECT_KEY, "Epic")
-        epic_name_field = find_field_key(epic_meta, "Epic Name")
+    # ==========================
+    # EPIC CREATION
+    # ==========================
+
+    epic_data = structure.get("epic")
+
+    if epic_data:
+
+        if isinstance(epic_data, dict):
+            epic_name = epic_data.get(
+                "title",
+                "AI Generated Epic"
+            )
+
+            epic_description = epic_data.get(
+                "description",
+                f"Epic created from AI sprint: {epic_name}"
+            )
+
+        else:
+            epic_name = str(epic_data)
+
+            epic_description = (
+                f"Epic created from AI sprint: {epic_name}"
+            )
+
+        debug_log(
+            "EPIC DEBUG",
+            "epic_name=",
+            repr(epic_name),
+            "type=",
+            str(type(epic_name))
+        )
+
+        epic_meta = get_issue_metadata(
+            JIRA_PROJECT_KEY,
+            "Epic"
+        )
+
+        epic_name_field = find_field_key(
+            epic_meta,
+            "Epic Name"
+        )
+
         epic_fields = {}
+
         if epic_name_field:
             epic_fields[epic_name_field] = epic_name
 
-        epic_description = format_story_description({
-            "description": f"Epic created from AI sprint: {epic_name}."
-        })
-        epic_result = create_jira_issue(epic_name, epic_description, issue_type="Epic", extra_fields=epic_fields)
+        epic_result = create_jira_issue(
+            summary=epic_name,
+            description=epic_description,
+            issue_type="Epic",
+            extra_fields=epic_fields
+        )
+
         created.append(epic_result)
+
         if epic_result.get("success"):
             epic_key = epic_result["issue_key"]
 
-    story_meta = get_issue_metadata(JIRA_PROJECT_KEY, "Story")
-    epic_link_field = find_field_key(story_meta, "Epic Link")
+    # ==========================
+    # STORY CREATION
+    # ==========================
+
+    story_meta = get_issue_metadata(
+        JIRA_PROJECT_KEY,
+        "Story"
+    )
+
+    epic_link_field = find_field_key(
+        story_meta,
+        "Epic Link"
+    )
+
+    debug_log(
+        "Epic Link Field:",
+        repr(epic_link_field)
+    )
 
     for story in structure.get("stories", []):
-        story_title = story.get("title") or "Untitled Story"
-        story_description = format_story_description(story)
-        extra_fields = {}
-        if epic_key and epic_link_field:
-            extra_fields[epic_link_field] = epic_key
 
-        story_result = create_jira_issue(story_title, story_description, issue_type="Story", extra_fields=extra_fields)
+        story_title = story.get(
+            "title",
+            "Untitled Story"
+        )
+
+        story_description = (
+            format_story_description(story)
+        )
+
+        extra_fields = {}
+
+        if epic_key and epic_link_field:
+            extra_fields[
+                epic_link_field
+            ] = epic_key
+
+        story_result = create_jira_issue(
+            summary=story_title,
+            description=story_description,
+            issue_type="Story",
+            extra_fields=extra_fields
+        )
+
         created.append(story_result)
 
-    successful = [item for item in created if item.get("success")]
-    failed = [item for item in created if not item.get("success")]
+    successful = [
+        item for item in created
+        if item.get("success")
+    ]
+
+    failed = [
+        item for item in created
+        if not item.get("success")
+    ]
 
     if successful and not failed:
-        first_url = successful[0].get("issue_url")
-        issue_keys = [item.get("issue_key") for item in successful]
+
+        first_url = successful[0].get(
+            "issue_url"
+        )
+
+        issue_keys = [
+            item.get("issue_key")
+            for item in successful
+        ]
+
         return {
             "success": True,
-            "issue_key": issue_keys[0] if issue_keys else None,
+            "issue_key": (
+                issue_keys[0]
+                if issue_keys else None
+            ),
             "issue_url": first_url,
             "issue_keys": issue_keys,
             "issues": successful,
-            "message": f"Created {len(successful)} Jira issue(s)."
+            "message": (
+                f"Created {len(successful)} Jira issue(s)."
+            )
         }
 
     return {
         "success": False,
         "error": "Some Jira issues failed to create.",
         "issues": created,
-        "message": "; ".join([item.get("error", "Unknown error") for item in failed])
+        "message": "; ".join(
+            [
+                item.get(
+                    "error",
+                    "Unknown error"
+                )
+                for item in failed
+            ]
+        )
     }
