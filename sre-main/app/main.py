@@ -7,6 +7,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import JSONResponse, RedirectResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from slack_sdk import WebClient
+from fastapi.templating import Jinja2Templates
 
 from app.memory import (
     get_user_history,
@@ -32,6 +33,12 @@ from app.jira import (
 )
 
 load_dotenv()
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+templates = Jinja2Templates(
+    directory=os.path.join(BASE_DIR, "templates")
+)
 
 def log_debug(*messages):
     sys.stderr.write("[APP DEBUG] " + " ".join(str(m) for m in messages) + "\n")
@@ -79,7 +86,10 @@ async def assistant_ui(request: Request):
 
 
 @app.post("/generate")
-async def generate(prompt: str = Form(...)):
+async def generate(
+    request: Request,
+    prompt: str = Form(...)
+):
 
     log_debug(f"POST /generate called with prompt: {repr(prompt[:100])}")
 
@@ -103,9 +113,15 @@ async def generate(prompt: str = Form(...)):
 
         log_debug("Jira is NOT configured, skipping issue creation")
 
+    if jira_response and jira_response.get("success"):
+        return RedirectResponse(
+            url=jira_response["issue_url"],
+            status_code=302
+        )
+
     return JSONResponse({
-        "success": True,
-        "structure": structure,
+        "success": False,
+        "error": "Jira issue creation failed",
         "jira": jira_response
     })
 
