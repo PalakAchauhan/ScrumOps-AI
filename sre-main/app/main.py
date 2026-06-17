@@ -162,6 +162,58 @@ async def slack_events(request: Request):
 
     event = data.get("event", {})
 
+    # -------------------------
+    # APP HOME
+    # -------------------------
+
+    if event.get("type") == "app_home_opened":
+
+        client.views_publish(
+            user_id=event["user"],
+            view={
+                "type": "home",
+                "blocks": [
+                    {
+                        "type": "header",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "SprintOps Assistant"
+                        }
+                    },
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": (
+                                "✅ SprintOps Assistant is active.\n\n"
+                                "AI-powered Sprint Planning and Jira Automation."
+                            )
+                        }
+                    },
+                    {
+                        "type": "divider"
+                    },
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": (
+                                "*Available Commands*\n"
+                                "• Start Standup\n"
+                                "• Show My History\n"
+                                "• Show Today Report\n"
+                                "• Show Weekly Report\n"
+                                "• Launch AI Assistant"
+                            )
+                        }
+                    }
+                ]
+            }
+        )
+
+        return JSONResponse({"status": "home_published"})
+
+
     if (
         event.get("type") == "message"
         and "bot_id" not in event
