@@ -1,511 +1,136 @@
-# UPDATED `README.md`
+# SprintOps Assistant
 
-````md
-# AI Sprint Planning Assistant
+SprintOps Assistant is an AI-powered Agile Sprint Planning and Standup Automation platform built using FastAPI, Slack, Gemini AI, and Jira.
 
-AI-powered Agile Sprint Planning Assistant integrated with:
+## Features
 
-- Slack
-- Jira
-- Gemini/OpenAI
-- FastAPI
-- Render Deployment
+### AI Sprint Planning
 
-The application allows users to:
+* Generate Epics
+* Generate User Stories
+* Generate Tasks
+* Generate Acceptance Criteria
 
-- Generate Epics
-- Generate User Stories
-- Generate Tasks
-- Generate Acceptance Criteria
-- Automatically create real Jira tickets
-- Launch AI Assistant directly from Slack
-- Redirect directly to created Jira issues
+### Jira Integration
 
----
+* Automatic Epic Creation
+* Automatic Story Creation
+* Direct Jira Redirect
+* Jira Cloud Support
 
-# Architecture
+### Slack Integration
 
-```text
-Slack App
-   ↓
-Launch AI Assistant
-   ↓
-AI Prompt UI
-   ↓
-Gemini/OpenAI Sprint Generation
-   ↓
-Automatic Jira Ticket Creation
-   ↓
-Redirect to Real Jira Issue
-````
+* Daily Standup Collection
+* Team Status Tracking
+* Historical Reports
+* Open Blocker Tracking
+* AI Assistant Launch Commands
 
----
+### AI Assistant UI
 
-# Features
+* Web-based Sprint Planner
+* AI Sprint Generation
+* Sprint Modification Support
 
-## Slack Integration
+## Supported Slack Commands
 
-* Slack Home Tab
-* AI Assistant Launch Button
-* Slack Slash Command Support
-* Slack Bot Messages
+start standup
 
-## Jira Integration
+show yesterday update
 
-* Real Jira Ticket Creation
-* Epic Creation
-* Story Creation
-* Auto Redirect to Jira Issue
+show my history
 
-## AI Features
+show today report
 
-* Sprint Planning
-* Epic Generation
-* Story Generation
-* Acceptance Criteria Generation
-* Story Points Estimation
-* AI Sprint Modification
+show weekly report
 
----
+show monthly report
 
-# Tech Stack
+show yearly report
+
+show open blockers
+
+launch ai assistant
+
+## Sample AI Prompts
+
+Create a digital banking platform
+
+Create a hospital management system
+
+Create a cricket stadium management platform
+
+Create an airline reservation system
+
+Create a newspaper publishing platform
+
+Create a school ERP system
+
+Create a food delivery application
+
+Create an inventory management system
+
+## Sample Sprint Modification Prompts
+
+Add security testing tasks
+
+Add OAuth support
+
+Improve acceptance criteria
+
+Add Docker deployment tasks
+
+Add Kubernetes deployment tasks
+
+Add Terraform infrastructure tasks
+
+Add AWS deployment requirements
+
+Add monitoring and logging tasks
+
+## Technology Stack
 
 * FastAPI
-* Jinja2
 * Slack SDK
-* Jira REST API
-* Gemini / OpenAI
+* Gemini AI
+* Jira Cloud API
+* Python
 * Render
 
----
+## Deployment
 
-# Local Setup
+1. Configure Render environment variables
+2. Configure Slack Bot Token
+3. Configure Jira Credentials
+4. Deploy FastAPI application
+5. Install Slack Application
+6. Configure Jira Project
 
-## Clone Repository
+## Environment Variables
 
-```bash
-git clone <YOUR_REPO_URL>
-cd sre-main
-```
+JIRA_BASE_URL
 
----
+JIRA_API_EMAIL
 
-# Create Virtual Environment
+JIRA_API_TOKEN
 
-```bash
-python -m venv venv
-```
+JIRA_PROJECT_KEY
 
-Activate:
+SLACK_BOT_TOKEN
 
-### Windows
+GOOGLE_API_KEY
 
-```bash
-venv\Scripts\activate
-```
+## Current Capabilities
 
-### Linux / Mac
+* AI Sprint Generation
+* Jira Epic Creation
+* Jira Story Creation
+* Slack Home Tab
+* Standup Tracking
+* Historical Reports
+* Open Blocker Reporting
+* Sprint Modification Support
 
-```bash
-source venv/bin/activate
-```
+## Status
 
----
-
-# Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-# Create `.env`
-
-```env
-GOOGLE_API_KEY=your_google_api_key
-
-JIRA_URL=https://your-domain.atlassian.net
-JIRA_EMAIL=your_jira_email
-JIRA_API_TOKEN=your_jira_api_token
-JIRA_PROJECT_KEY=SJA
-
-SLACK_BOT_TOKEN=xoxb-xxxxxxxx
-SLACK_SIGNING_SECRET=xxxxxxxx
-
-BASE_URL=https://your-render-app.onrender.com
-```
-
----
-
-# Run Locally
-
-```bash
-uvicorn app.main:app --reload
-```
-
-Open:
-
-```text
-http://127.0.0.1:8000
-```
-
----
-
-# Render Deployment
-
-## Step 1 — Push Code To GitHub
-
-```bash
-git add .
-git commit -m "production deployment"
-git push origin main
-```
-
----
-
-## Step 2 — Create Render Account
-
-Open:
-
-```text
-https://render.com
-```
-
-Login using GitHub.
-
----
-
-## Step 3 — Create Web Service
-
-Click:
-
-```text
-New +
-```
-
-Then:
-
-```text
-Web Service
-```
-
-Select your GitHub repo.
-
----
-
-## Step 4 — Configure Render
-
-### Name
-
-```text
-ai-sprint-planner
-```
-
-### Environment
-
-```text
-Python 3
-```
-
-### Build Command
-
-```bash
-pip install -r requirements.txt
-```
-
-### Start Command
-
-```bash
-uvicorn app.main:app --host 0.0.0.0 --port 10000
-```
-
----
-
-# Step 5 — Add Environment Variables
-
-Inside Render Dashboard:
-
-```text
-Environment
-```
-
-Add:
-
-```env
-GOOGLE_API_KEY=your_google_api_key
-
-JIRA_URL=https://your-domain.atlassian.net
-JIRA_EMAIL=your_jira_email
-JIRA_API_TOKEN=your_jira_api_token
-JIRA_PROJECT_KEY=SJA
-
-SLACK_BOT_TOKEN=xoxb-xxxxxxxx
-SLACK_SIGNING_SECRET=xxxxxxxx
-
-BASE_URL=https://your-render-app.onrender.com
-```
-
----
-
-# Step 6 — Deploy
-
-Click:
-
-```text
-Create Web Service
-```
-
-Wait until deployment completes.
-
-You will get:
-
-```text
-https://your-render-app.onrender.com
-```
-
----
-
-# Slack Configuration
-
-Open:
-
-```text
-https://api.slack.com/apps
-```
-
-Select your app.
-
----
-
-# Event Subscriptions
-
-Enable Events.
-
-Request URL:
-
-```text
-https://your-render-app.onrender.com/slack/events
-```
-
-Add Bot Event:
-
-```text
-app_home_opened
-```
-
----
-
-# OAuth & Permissions
-
-Add Bot Scopes:
-
-```text
-app_home:read
-app_home:write
-chat:write
-commands
-im:history
-im:read
-im:write
-```
-
-Then:
-
-```text
-Reinstall to Workspace
-```
-
----
-
-# App Home
-
-Enable:
-
-* Home Tab
-* Messages Tab
-
----
-
-# Final Production Flow
-
-```text
-Slack-Int Home
-    ↓
-Launch AI Assistant
-    ↓
-Enter Prompt
-    ↓
-AI Generates Sprint
-    ↓
-Real Jira Issues Created
-    ↓
-Automatic Redirect To Jira Ticket
-```
-
----
-
-# Example Prompt
-
-```text
-Create user stories for weather forecasting application
-```
-
-
-# DEPLOYMENT GUIDE FROM SCRATCH
-
-## 1. Push Latest Code
-
-Run:
-
-```bash
-git add .
-git commit -m "final production deployment"
-git push origin main
-````
-
----
-
-## 2. Create `requirements.txt`
-
-If missing:
-
-```bash
-pip freeze > requirements.txt
-```
-
-Make sure these exist:
-
-```text
-fastapi
-uvicorn
-jinja2
-python-dotenv
-slack-sdk
-google-generativeai
-requests
-python-multipart
-```
-
----
-
-## 3. Render Deployment
-
-Open:
-
-```text
-https://render.com
-```
-
-### Click:
-
-```text
-New + → Web Service
-```
-
-### Connect GitHub repo.
-
----
-
-## 4. Render Settings
-
-### Runtime
-
-```text
-Python 3
-```
-
-### Build Command
-
-```bash
-pip install -r requirements.txt
-```
-
-### Start Command
-
-```bash
-uvicorn app.main:app --host 0.0.0.0 --port 10000
-```
-
----
-
-## 5. Add ENV Variables
-
-Render Dashboard → Environment:
-
-```env
-GOOGLE_API_KEY=
-JIRA_URL=
-JIRA_EMAIL=
-JIRA_API_TOKEN=
-JIRA_PROJECT_KEY=
-SLACK_BOT_TOKEN=
-SLACK_SIGNING_SECRET=
-BASE_URL=https://your-render-app.onrender.com
-```
-
----
-
-## 6. Deploy
-
-Click:
-
-```text
-Create Web Service
-```
-
-Wait for:
-
-```text
-Live
-```
-
-status.
-
----
-
-## 7. Configure Slack
-
-Open:
-
-```text
-https://api.slack.com/apps
-```
-
-### Event Subscription URL
-
-```text
-https://your-render-app.onrender.com/slack/events
-```
-
-### Add Event
-
-```text
-app_home_opened
-```
-
-### Reinstall App
-
-```text
-OAuth & Permissions → Reinstall
-```
-
----
-
-# FINAL RESULT
-
-Production App Flow:
-
-```text
-Slack App
-↓
-Launch AI Assistant
-↓
-Prompt
-↓
-AI Generates Sprint
-↓
-Real Jira Ticket Created
-↓
-Redirect To Jira Issue
-```
+Production Ready
