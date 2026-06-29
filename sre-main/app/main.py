@@ -262,7 +262,7 @@ async def slack_events(request: Request):
 
                 return JSONResponse({"status": "empty"})
 
-            response = "📅 *Today's Report*\n" f"Date : {current_date()}\n\n"
+            response = "*Today's Report*\n" f"Date : {current_date()}\n\n"
 
             for item in report:
 
@@ -290,7 +290,7 @@ async def slack_events(request: Request):
                 return JSONResponse({"status": "empty"})
 
             response = (
-                "📋 *Yesterday's Report*\n"
+                "*Yesterday's Report*\n"
                 f"Date : {format_display_date(yesterday)}\n\n"
             )
 
@@ -321,12 +321,12 @@ async def slack_events(request: Request):
 
             start, end = weekly_range()
 
-            response = "📊 *Weekly Report*\n" f"{start} - {end}\n\n"
+            response = "*Weekly Report*\n" f"{start} - {end}\n\n"
 
             for item in report:
 
                 response += (
-                    f"📅 {format_display_date(item['date'])}\n"
+                    f"{format_display_date(item['date'])}\n"
                     f"Status : {item['status']}\n"
                     f"Work : {item['today_work']}\n"
                     f"Blockers : {item['blockers']}\n\n"
@@ -348,7 +348,7 @@ async def slack_events(request: Request):
 
                 return JSONResponse({"status": "empty"})
 
-            response = f"📈 *Monthly Report*\n" f"{current_month()}\n\n"
+            response = f"*Monthly Report*\n" f"{current_month()}\n\n"
 
             for item in report:
 
@@ -374,7 +374,7 @@ async def slack_events(request: Request):
 
                 return JSONResponse({"status": "empty"})
 
-            response = f"📆 *Yearly Report*\n" f"{current_year()}\n\n"
+            response = f"*Yearly Report*\n" f"{current_year()}\n\n"
 
             for item in report:
 

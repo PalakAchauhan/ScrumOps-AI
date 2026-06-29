@@ -1,112 +1,214 @@
 # SprintOps Assistant
 
-SprintOps Assistant is an AI-powered Agile Sprint Planning and Standup Automation platform built using FastAPI, Slack, Gemini AI, and Jira.
+SprintOps Assistant is an AI-powered Agile Sprint Planning and Daily Standup Automation platform built using FastAPI, Slack, Gemini AI, and Jira Cloud. It streamlines sprint planning, automates daily standups, generates reports, and integrates directly with Jira for seamless Agile workflow management.
 
-## Features
+---
 
-### AI Sprint Planning
+# Features
+
+## AI Sprint Planning
 
 * Generate Epics
 * Generate User Stories
 * Generate Tasks
 * Generate Acceptance Criteria
+* Modify Existing Sprint Plans
+* AI-powered Sprint Recommendations
 
-### Jira Integration
+---
+
+## Jira Integration
 
 * Automatic Epic Creation
-* Automatic Story Creation
-* Direct Jira Redirect
-* Jira Cloud Support
+* Automatic User Story Creation
+* Automatic Task Creation
+* Jira Cloud Integration
+* Direct Jira Redirect after Creation
 
-### Slack Integration
+---
 
-* Daily Standup Collection
-* Team Status Tracking
-* Historical Reports
+## Slack Integration
+
+* Interactive Daily Standup Workflow
+* On Track / Blocked Status Buttons
+* AI-guided Standup Conversation
+* Daily Status Tracking
+* Historical Standup Records
 * Open Blocker Tracking
+* Slack Home Dashboard
 * AI Assistant Launch Commands
 
-### AI Assistant UI
+---
 
-* Web-based Sprint Planner
-* AI Sprint Generation
-* Sprint Modification Support
+## Standup Reports
 
-## Supported Slack Commands
+SprintOps automatically stores every completed standup and generates reports.
 
-start standup
+Supported reports include:
 
-show yesterday update
+* Today's Report
+* Yesterday's Report
+* Weekly Report
+* Monthly Report
+* Yearly Report
+* Open Blocker Report
 
-show my history
+Each report includes:
 
-show today report
+* Report Date
+* Submission Time
+* Status
+* Work Completed
+* Blockers
+* Support Required
 
-show weekly report
+---
 
-show monthly report
+## Downloadable Reports
 
-show yearly report
+SprintOps can generate downloadable Microsoft Word reports directly from Slack.
 
-show open blockers
+Supported downloads:
 
-launch ai assistant
+* Download Today Report
+* Download Weekly Report
+* Download Monthly Report
+* Download Yearly Report
 
-## Sample AI Prompts
+Generated reports include:
 
-Create a digital banking platform
+* SprintOps AI Report Header
+* Report Generation Timestamp
+* Daily Standup Details
+* Report Summary
+* Productivity Statistics
 
-Create a hospital management system
+---
 
-Create a cricket stadium management platform
+## AI Assistant
 
-Create an airline reservation system
+The built-in web assistant provides:
 
-Create a newspaper publishing platform
+* Sprint Planning
+* Sprint Modification
+* AI Story Generation
+* Jira Automation
+* Project Planning Assistance
 
-Create a school ERP system
+---
 
-Create a food delivery application
+# Supported Slack Commands
 
-Create an inventory management system
+## Standup
 
-## Sample Sprint Modification Prompts
+* start standup
 
-Add security testing tasks
+---
 
-Add OAuth support
+## Reports
 
-Improve acceptance criteria
+* show today report
+* show yesterday update
+* show weekly report
+* show monthly report
+* show yearly report
+* show my history
+* show open blockers
 
-Add Docker deployment tasks
+---
 
-Add Kubernetes deployment tasks
+## Report Downloads
 
-Add Terraform infrastructure tasks
+* download today report
+* download weekly report
+* download monthly report
+* download yearly report
 
-Add AWS deployment requirements
+---
 
-Add monitoring and logging tasks
+## Assistant
 
-## Technology Stack
+* launch ai assistant
+
+---
+
+# Sample AI Prompts
+
+* Create a Digital Banking Platform
+* Create a Hospital Management System
+* Create a School ERP System
+* Create an Airline Reservation System
+* Create an Inventory Management System
+* Create a Food Delivery Platform
+* Create a Newspaper Publishing Platform
+* Create a Cricket Stadium Management System
+
+---
+
+# Sample Sprint Modification Prompts
+
+* Add Security Testing Tasks
+* Add Docker Deployment Tasks
+* Add Kubernetes Deployment
+* Add Terraform Infrastructure
+* Add AWS Deployment Tasks
+* Add Monitoring and Logging
+* Improve Acceptance Criteria
+* Add OAuth Support
+
+---
+
+# Technology Stack
 
 * FastAPI
-* Slack SDK
-* Gemini AI
-* Jira Cloud API
 * Python
+* Slack SDK
+* Google Gemini AI
+* Jira Cloud API
+* Microsoft Word (python-docx)
 * Render
+* JSON-based Local Memory Storage
 
-## Deployment
+---
 
-1. Configure Render environment variables
-2. Configure Slack Bot Token
-3. Configure Jira Credentials
-4. Deploy FastAPI application
-5. Install Slack Application
-6. Configure Jira Project
+# Project Structure
 
-## Environment Variables
+```
+app/
+│
+├── main.py
+├── bot.py
+├── memory.py
+├── jira.py
+├── slack_blocks.py
+├── reports/
+│   └── report_generator.py
+│
+├── templates/
+├── static/
+└── generated_reports/
+```
+
+---
+
+# Deployment
+
+1. Configure Render Environment Variables
+2. Configure Slack Application
+3. Configure Slack Bot Token
+4. Configure Jira Credentials
+5. Deploy FastAPI Application
+6. Install or Reinstall the Slack App
+7. Start using SprintOps Assistant
+
+---
+
+# Environment Variables
+
+```
+GOOGLE_API_KEY
+
+SLACK_BOT_TOKEN
 
 JIRA_BASE_URL
 
@@ -115,22 +217,45 @@ JIRA_API_EMAIL
 JIRA_API_TOKEN
 
 JIRA_PROJECT_KEY
+```
 
-SLACK_BOT_TOKEN
+---
 
-GOOGLE_API_KEY
+# Current Capabilities
 
-## Current Capabilities
-
-* AI Sprint Generation
+* AI Sprint Planning
+* AI Sprint Modification
 * Jira Epic Creation
 * Jira Story Creation
-* Slack Home Tab
-* Standup Tracking
-* Historical Reports
+* Jira Task Creation
+* Interactive Slack Standups
+* Standup Session Tracking
+* Daily Report Generation
+* Weekly Report Generation
+* Monthly Report Generation
+* Yearly Report Generation
+* Historical Report Tracking
 * Open Blocker Reporting
-* Sprint Modification Support
+* Downloadable Word Reports
+* AI Assistant Dashboard
 
-## Status
+---
 
-Production Ready
+# Future Enhancements
+
+* PDF Report Generation
+* Team Productivity Dashboard
+* AI Standup Summaries
+* Email Report Delivery
+* Calendar Integration
+* Team Analytics
+* Burndown Insights
+* Automatic Blocker Notifications
+
+---
+
+# Status
+
+**Production Ready**
+
+SprintOps Assistant is a fully functional AI-powered Agile Sprint Planning and Standup Automation platform with Jira integration, Slack automation, downloadable reports, and AI-assisted sprint management.
