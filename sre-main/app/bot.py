@@ -1,16 +1,10 @@
-import os
 import json
+import os
+
 import google.generativeai as genai
-
+from app.memory import (end_session, get_session, save_standup_record,
+                        start_session, update_session)
 from dotenv import load_dotenv
-
-from app.memory import (
-    start_session,
-    get_session,
-    update_session,
-    end_session,
-    save_standup_record
-)
 
 load_dotenv()
 
@@ -21,68 +15,42 @@ genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel("gemini-2.5-flash")
 
 
-# ---------------------------------------------------
-# SCRUM FOLLOWUP FLOW
-# ---------------------------------------------------
-
 def generate_followup_question(user_id, user_message):
 
     session = get_session(user_id)
 
     if not session:
 
-        return (
-            "Please start a standup first by typing "
-            "'start standup'"
-        )
+        return "Please start a standup first by typing " "'start standup'"
 
     stage = session["stage"]
 
-    # Question 1 answered
     if stage == 1:
 
-        update_session(
-            user_id,
-            "today_work",
-            user_message
-        )
+        update_session(user_id, "today_work", user_message)
 
         session["stage"] = 2
 
-        return (
-            "Do you have any blockers today?"
-        )
+        return "Do you have any blockers today?"
 
-    # Question 2 answered
     elif stage == 2:
 
-        update_session(
-            user_id,
-            "blockers",
-            user_message
-        )
+        update_session(user_id, "blockers", user_message)
 
         session["stage"] = 3
 
-        return (
-            "Do you need any support from the team?"
-        )
+        return "Do you need any support from the team?"
 
-    # Question 3 answered
     elif stage == 3:
 
-        update_session(
-            user_id,
-            "support",
-            user_message
-        )
+        update_session(user_id, "support", user_message)
 
         save_standup_record(
             user_id,
             session["status"],
             session["today_work"],
             session["blockers"],
-            user_message
+            user_message,
         )
 
         end_session(user_id)
@@ -104,9 +72,10 @@ def generate_followup_question(user_id, user_message):
 # JIRA SPRINT STRUCTURE GENERATOR
 # ---------------------------------------------------
 
+
 def generate_jira_structure(user_prompt):
 
-    prompt = f'''
+    prompt = f"""
 You are an expert Agile Scrum Master.
 
 Convert the following requirement into:
@@ -137,7 +106,7 @@ Format:
 
 Requirement:
 {user_prompt}
-'''
+"""
 
     response = model.generate_content(prompt)
 
@@ -152,19 +121,17 @@ Requirement:
 
     except Exception as e:
 
-        return {
-            "error": str(e),
-            "raw_response": text
-        }
+        return {"error": str(e), "raw_response": text}
 
 
 # ---------------------------------------------------
 # MODIFY EXISTING SPRINT
 # ---------------------------------------------------
 
+
 def modify_sprint(original_prompt, modification_prompt):
 
-    prompt = f'''
+    prompt = f"""
 You are an Agile Scrum AI Assistant.
 
 Original Sprint Requirement:
@@ -176,7 +143,7 @@ Modification Request:
 Update the sprint structure accordingly.
 
 Return proper readable response.
-'''
+"""
 
     response = model.generate_content(prompt)
 

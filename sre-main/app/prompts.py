@@ -1,4 +1,3 @@
-
 SCRUM_MASTER_PROMPT = """
 You are an AI Scrum Master.
 
